@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>ALLDATA Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+<link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet"/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Outfit',sans-serif;font-size:14px;background:#f4f7ff;color:#1e2a3a;overflow:hidden}
+#gate{position:fixed;inset:0;z-index:99;background:linear-gradient(135deg,#e8efff,#f5f0ff,#e8f5ff);display:flex;align-items:center;justify-content:center}
+.gc{background:#fff;border-radius:20px;padding:40px 44px;width:380px;box-shadow:0 4px 6px #0001,0 20px 60px #3b5fff18,0 0 0 1px #e2e8f5;animation:ci .4s ease-out}
+@keyframes ci{from{opacity:0;transform:translateY(20px)}}
+.gl{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.lb{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#2563eb,#60a5fa);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;letter-spacing:1px;box-shadow:0 4px 14px #2563eb30}
+.gt{font-size:19px;font-weight:700;color:#1e293b;margin-bottom:3px}
+.gs{font-size:12px;color:#8a9bb5;margin-bottom:22px}
+.ge{color:#dc2626;font-size:12px;min-height:16px;margin-top:-6px}
+#app{display:none;flex-direction:column;height:100vh}
+.tb{height:54px;background:#fff;border-bottom:1px solid #e8eef8;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0;box-shadow:0 1px 3px #0001}
+.tlb{width:34px;height:34px;background:linear-gradient(135deg,#2563eb,#60a5fa);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#fff}
+.tt{font-weight:700;font-size:14px;color:#1e293b}
+.ttg{background:#fee2e2;color:#dc2626;border-radius:5px;padding:2px 9px;font-size:11px;font-weight:700}
+.tr{margin-left:auto;display:flex;gap:8px}
+.shell{display:flex;flex:1;overflow:hidden;min-height:0}
+.sb{width:210px;flex-shrink:0;background:#fff;border-right:1px solid #e8eef8;padding:14px 10px;display:flex;flex-direction:column;gap:2px}
+.nav{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:9px;cursor:pointer;color:#6b7fa3;font-size:13px;font-weight:500;transition:.14s;user-select:none}
+.nav:hover{background:#f0f4ff;color:#1e2a3a}
+.nav.on{background:#eff6ff;color:#2563eb;font-weight:600}
+.nav i{font-size:16px;width:20px;text-align:center}
+.nsep{height:1px;background:#eef2fb;margin:7px 6px}
+.nsec{font-size:10px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.8px;padding:5px 11px 3px}
+.pcnt{background:#dc2626;color:#fff;border-radius:99px;padding:1px 7px;font-size:11px;font-weight:700;margin-left:auto;display:none}
+.ct{flex:1;overflow-y:auto;padding:24px;background:#f4f7ff}
+.pg{display:none;animation:pi .18s ease-out}
+.pg.on{display:block}
+@keyframes pi{from{opacity:0;transform:translateY(5px)}}
+.pgt{font-size:19px;font-weight:700;color:#1e2a3a;letter-spacing:-.3px}
+.pgd{font-size:13px;color:#8a9bb5;margin-top:3px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:#fff;border-radius:12px;padding:15px 17px;box-shadow:0 1px 3px #0001,0 0 0 1px #e8eef8}
+.sv{font-size:26px;font-weight:700;line-height:1}
+.sl{font-size:11px;color:#8a9bb5;margin-top:3px;text-transform:uppercase;letter-spacing:.5px}
+.cb{color:#2563eb}.cg{color:#059669}.ca{color:#d97706}.cr{color:#dc2626}
+.card{background:#fff;border-radius:12px;padding:18px 20px;margin-bottom:14px;box-shadow:0 1px 3px #0001,0 0 0 1px #e8eef8}
+.cth{font-size:11px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.8px;padding-bottom:12px;border-bottom:1px solid #f0f4ff;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:11px;font-weight:600;color:#8a9bb5;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.field input,.field select{width:100%;padding:9px 12px;background:#f6f8ff;border:1.5px solid #e2e8f5;border-radius:9px;color:#1e2a3a;font-size:13px;font-family:'Outfit',sans-serif;outline:none;transition:.18s}
+.field input:focus,.field select:focus{border-color:#2563eb;background:#fff;box-shadow:0 0 0 3px #2563eb10}
+.field input[type=date]::-webkit-calendar-picker-indicator{cursor:pointer;opacity:.5}
+.r2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.r3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.14s;font-family:'Outfit',sans-serif;white-space:nowrap}
+.btn i{font-size:14px}
+.bp{background:#2563eb;color:#fff}.bp:hover{background:#1d4ed8;transform:translateY(-1px)}
+.bg_{background:#059669;color:#fff}.bg_:hover{background:#047857;transform:translateY(-1px)}
+.bd{background:#fee2e2;color:#dc2626;border:1px solid #fca5a5}.bd:hover{background:#fecaca}
+.bgh{background:#f6f8ff;color:#4a6fa5;border:1.5px solid #e2e8f5}.bgh:hover{border-color:#93c5fd;color:#2563eb}
+.bam{background:#fef3c7;color:#d97706;border:1px solid #fde68a}.bam:hover{background:#fde68a}
+.bpu{background:#ede9fe;color:#7c3aed;border:1px solid #ddd6fe}.bpu:hover{background:#ddd6fe}
+.bsm{padding:5px 9px;font-size:12px}
+.btxt{margin-left:4px}
+/* Action buttons in the employees table always show a text label — the icon
+   font (Tabler Icons, loaded from a CDN) can fail to load on some networks,
+   which previously left these as blank, invisible, unclickable-looking
+   squares (e.g. the Edit button). Text keeps them usable either way. */
+.brow{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}
+.tbar{display:flex;align-items:center;gap:9px;margin-bottom:13px}
+.srch{flex:1;padding:9px 12px;background:#fff;border:1.5px solid #e2e8f5;border-radius:9px;color:#1e2a3a;font-size:13px;outline:none;font-family:'Outfit',sans-serif}
+.srch:focus{border-color:#2563eb}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.6px;padding:0 12px 9px;border-bottom:1.5px solid #f0f4ff}
+td{padding:10px 12px;border-bottom:1px solid #f6f8ff;vertical-align:middle;font-size:13px}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafcff}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600}
+.bgg{background:#d1fae5;color:#059669}.bgr{background:#fee2e2;color:#dc2626}.bga{background:#fef3c7;color:#d97706}.bgb{background:#dbeafe;color:#2563eb}.bgntr{background:#f3f4f6;color:#6b7280}
+.bdot{width:5px;height:5px;border-radius:50%;background:currentColor}
+.mono{font-family:'JetBrains Mono',monospace;font-size:11px;color:#6b7fa3;background:#f0f4ff;padding:2px 7px;border-radius:5px;border:1px solid #e2e8f5;display:inline-block;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tgl{position:relative;display:inline-block;width:38px;height:21px}
+.tgl input{opacity:0;width:0;height:0}
+.tsl{position:absolute;inset:0;background:#e2e8f5;border-radius:99px;cursor:pointer;transition:.2s;border:1.5px solid #cbd5e1}
+.tsl:before{content:'';position:absolute;width:15px;height:15px;left:2px;top:1px;background:#94a3b8;border-radius:50%;transition:.2s}
+input:checked+.tsl{background:#059669;border-color:#059669}
+input:checked+.tsl:before{transform:translateX(17px);background:#fff}
+#mo{position:fixed;inset:0;z-index:500;background:#1e2a3a60;backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center}
+#mo.open{display:flex}
+.modal{background:#fff;border-radius:16px;padding:26px;width:480px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px #1e2a3a30;animation:mi .2s ease-out}
+@keyframes mi{from{opacity:0;transform:scale(.96)translateY(8px)}}
+.mttl{font-size:16px;font-weight:700;color:#1e2a3a;margin-bottom:18px}
+.mft{display:flex;gap:7px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid #f0f4ff}
+.al{border-radius:9px;padding:11px 13px;font-size:12px;line-height:1.7;margin-bottom:13px;display:flex;gap:9px;align-items:flex-start}
+.al i{font-size:14px;flex-shrink:0;margin-top:1px}
+.alw{background:#fef3c7;border:1px solid #fde68a;color:#92400e}
+.ali{background:#dbeafe;border:1px solid #bfdbfe;color:#1e40af}
+.alo{background:#d1fae5;border:1px solid #a7f3d0;color:#065f46}
+.srow{display:flex;align-items:center;gap:9px;padding:10px 12px;background:#f6f8ff;border:1.5px solid #e2e8f5;border-radius:9px}
+/* COOKIE TABLE */
+.ck-table{width:100%;border-collapse:collapse;margin-bottom:14px}
+.ck-table th{text-align:left;font-size:10px;font-weight:700;color:#a0aec0;text-transform:uppercase;letter-spacing:.6px;padding:0 10px 8px;border-bottom:1.5px solid #f0f4ff}
+.ck-table td{padding:8px 10px;border-bottom:1px solid #f6f8ff;font-size:12px;vertical-align:middle}
+.ck-table tr:last-child td{border-bottom:none}
+.ck-table tr:hover td{background:#fafcff}
+.ck-name{font-family:'JetBrains Mono',monospace;color:#2563eb;font-size:12px}
+.ck-val{font-family:'JetBrains Mono',monospace;color:#6b7fa3;font-size:11px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* ADD COOKIE FORM */
+.add-ck{display:grid;grid-template-columns:1fr 2fr auto;gap:8px;align-items:end;margin-bottom:14px}
+.add-ck .field{margin-bottom:0}
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.step{display:flex;gap:12px;align-items:flex-start;font-size:13px;color:#475569;line-height:1.6}
+.step-num{width:24px;height:24px;border-radius:50%;background:#2563eb;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-img{background:#0f172a;border-radius:8px;padding:8px 12px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#38bdf8;margin-top:6px;line-height:1.8}
+/* STATUS */
+.ck-status{display:flex;align-items:center;gap:8px;padding:10px 12px;background:#f6f8ff;border:1.5px solid #e2e8f5;border-radius:9px;font-size:13px}
+/* PROXY */
+.pxf{transition:.2s}
+.log-list{display:flex;flex-direction:column;gap:1px;max-height:180px;overflow-y:auto}
+.log-row{display:flex;gap:9px;padding:6px 7px;border-radius:6px;font-size:12px}
+.log-row:hover{background:#f6f8ff}
+.log-t{font-family:'JetBrains Mono',monospace;font-size:10px;color:#a0aec0;white-space:nowrap}
+.log-m{color:#6b7fa3}
+.rpend td{background:#fffbeb}.rpend:hover td{background:#fef3c7}
+.empty{text-align:center;padding:40px;color:#a0aec0}
+.empty i{font-size:36px;display:block;margin-bottom:10px;color:#cbd5e1}
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;background:#fff;border:1.5px solid #e2e8f5;border-radius:11px;padding:10px 16px;font-size:13px;font-weight:600;color:#1e2a3a;box-shadow:0 8px 30px #1e2a3a18;transform:translateY(50px);opacity:0;transition:all .3s cubic-bezier(.34,1.5,.64,1);display:flex;align-items:center;gap:7px;pointer-events:none}
+#toast.show{transform:translateY(0);opacity:1}
+#toast.ok{border-color:#34d399}#toast.err{border-color:#f87171}#toast.info{border-color:#60a5fa}#toast.warn{border-color:#fbbf24}
+/* ── MOBILE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .shell{flex-direction:column;overflow:auto}
+  .sb{width:100%;flex-direction:row;overflow-x:auto;overflow-y:hidden;padding:8px;gap:6px;border-right:none;border-bottom:1px solid #e8eef8;-webkit-overflow-scrolling:touch}
+  .sb::-webkit-scrollbar{height:4px}
+  .nav{flex-shrink:0;white-space:nowrap;padding:8px 12px}
+  .pg{padding:14px !important}
+  .r2{grid-template-columns:1fr}
+  .add-ck{grid-template-columns:1fr}
+  .tb{padding:0 12px}
+  .tb span{display:none}
+  table{font-size:12px}
+  table th,table td{padding:8px 6px !important;white-space:nowrap}
+  div.card[style*="overflow:hidden"]{overflow-x:auto !important;-webkit-overflow-scrolling:touch}
+  .mono{max-width:90px}
+  #mo{padding:14px}
+  .modal{width:100% !important;max-width:100% !important}
+  .brow{flex-direction:column}
+  .brow .btn{width:100%;justify-content:center}
+  .gl{gap:8px}
+  .lb{width:38px;height:38px;font-size:13px}
+  .gc{width:92% !important;padding:24px !important}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="gate">
+  <div class="gc">
+    <div class="gl">
+      <div class="lb">AD</div>
+      <div><div class="gt">ALLDATA Admin Panel</div><div class="gs">Owner access only</div></div>
+    </div>
+    <div class="field"><label>Admin Password</label>
+      <input type="password" id="pw" placeholder="Enter password" autofocus onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="ge" id="pw-err"></div>
+    <button class="btn bp" style="width:100%;justify-content:center;padding:11px;margin-top:8px" onclick="doLogin()">
+      <i class="ti ti-lock-open"></i> Unlock Panel
+    </button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="tb">
+    <div class="tlb">AD</div>
+    <span class="tt">ALLDATA Admin</span>
+    <span class="ttg">OWNER ONLY</span>
+    <div class="tr">
+      <button class="btn bam bsm" onclick="showPg('proxy')"><i class="ti ti-world"></i> Proxy</button>
+      <button class="btn bgh bsm" onclick="doLock()"><i class="ti ti-lock"></i> Lock</button>
+    </div>
+  </div>
+
+  <div class="shell">
+    <nav class="sb">
+      <div class="nav on" data-pg="dashboard" onclick="showPg('dashboard')"><i class="ti ti-layout-dashboard"></i>Dashboard</div>
+      <div class="nsep"></div>
+      <div class="nsec">Session</div>
+      <div class="nav" data-pg="cookies" onclick="showPg('cookies')"><i class="ti ti-cookie"></i>Session Cookies</div>
+      <div class="nav" data-pg="groups" onclick="showPg('groups')"><i class="ti ti-users-group"></i>Session Tokens</div>
+      <div class="nav" data-pg="proxy" onclick="showPg('proxy')"><i class="ti ti-world"></i>Proxy Settings</div>
+      <div class="nsep"></div>
+      <div class="nsec">People</div>
+      <div class="nav" data-pg="pending" onclick="showPg('pending')">
+        <i class="ti ti-clock"></i>Pending
+        <span class="pcnt" id="pend-cnt">0</span>
+      </div>
+      <div class="nav" data-pg="employees" onclick="showPg('employees')"><i class="ti ti-users"></i>All Employees</div>
+      <div class="nsep"></div>
+      <div class="nav" data-pg="log" onclick="showPg('log')"><i class="ti ti-list-details"></i>Activity Log</div>
+    </nav>
+
+    <div class="ct">
+
+      <!-- DASHBOARD -->
+      <div class="pg on" id="pg-dashboard">
+        <div class="pgt">Dashboard</div>
+        <div class="pgd">Real-time overview of your ALLDATA Desktop deployment</div>
+        <div class="stats">
+          <div class="stat"><div class="sv cb" id="s-tot">0</div><div class="sl">Total</div></div>
+          <div class="stat"><div class="sv cg" id="s-act">0</div><div class="sl">Active</div></div>
+          <div class="stat"><div class="sv ca" id="s-pnd">0</div><div class="sl">Pending</div></div>
+          <div class="stat"><div class="sv cr" id="s-blk">0</div><div class="sl">Blocked</div></div>
+        </div>
+        <div class="al alw" id="pend-alert" style="display:none">
+          <i class="ti ti-clock"></i>
+          <div><strong id="pend-alert-n">0</strong> employee(s) waiting.
+          <a style="color:#92400e;font-weight:700;cursor:pointer;text-decoration:underline" onclick="showPg('pending')"> Approve →</a></div>
+        </div>
+        <div class="r2" style="gap:14px;margin-bottom:14px">
+          <div class="card" style="margin-bottom:0"><div class="cth">Session Cookies</div><div id="dash-ck"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="cth">Proxy</div><div id="dash-proxy"></div></div>
+        </div>
+        <div class="card">
+          <div class="cth">Quick Actions</div>
+          <div class="brow" style="margin-top:0">
+            <button class="btn bpu bsm" onclick="showPg('cookies')"><i class="ti ti-cookie"></i> Manage Cookies</button>
+            <button class="btn bam bsm" onclick="showPg('proxy')"><i class="ti ti-world"></i> Proxy</button>
+            <button class="btn bp bsm" onclick="showPg('pending')"><i class="ti ti-clock"></i> Pending</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="cth">Recent Activity <button class="btn bgh bsm" onclick="clearLog()">Clear</button></div>
+          <div class="log-list" id="dash-log"><div style="color:#a0aec0;font-size:12px;padding:6px 0">No activity yet</div></div>
+        </div>
+      </div>
+
+      <!-- SESSION COOKIES -->
+      <div class="pg" id="pg-cookies">
+        <div class="pgt">Session Cookies</div>
+        <div class="pgd">Copy your ALLDATA session cookies from the browser inspector and add them here. They are stored encrypted and injected automatically into every employee's app.</div>
+
+        <!-- HOW TO GET COOKIES -->
+        <div class="card">
+          <div class="cth">📋 How to Copy Your ALLDATA Cookies</div>
+          <div class="steps">
+            <div class="step">
+              <div class="step-num">1</div>
+              <div>Open your browser → go to <strong>my.alldata.com</strong> → log in normally</div>
+            </div>
+            <div class="step">
+              <div class="step-num">2</div>
+              <div>Press <strong>F12</strong> to open DevTools → click <strong>Application</strong> tab (Chrome) or <strong>Storage</strong> tab (Firefox)</div>
+            </div>
+            <div class="step">
+              <div class="step-num">3</div>
+              <div>On the left sidebar → click <strong>Cookies</strong> → click <strong>https://my.alldata.com</strong></div>
+            </div>
+            <div class="step">
+              <div class="step-num">4</div>
+              <div>You will see a list of cookies. Add the important ones below — especially any with names like <strong>session</strong>, <strong>auth</strong>, <strong>token</strong>, or <strong>ASPXAUTH</strong>
+                <div class="step-img">
+                  Name              │ Value<br>
+                  ──────────────────┼──────────────────<br>
+                  .ASPXAUTH         │ ABC123xyz...<br>
+                  ASP.NET_SessionId │ qwerty123...<br>
+                  authToken         │ eyJhbG...
+                </div>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">5</div>
+              <div>Copy each cookie name and value → add them below → click <strong>Save All Cookies</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ADD COOKIE -->
+        <div class="card">
+          <div class="cth">Add Cookie</div>
+          <div class="add-ck">
+            <div class="field">
+              <label>Cookie Name</label>
+              <input type="text" id="ck-name" placeholder=".ASPXAUTH" style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+            </div>
+            <div class="field">
+              <label>Cookie Value</label>
+              <input type="text" id="ck-val" placeholder="Paste value here…" style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+            </div>
+            <div class="field" style="display:flex;align-items:flex-end">
+              <button class="btn bp" onclick="addCookie()" style="height:38px">
+                <i class="ti ti-plus"></i> Add
+              </button>
+            </div>
+          </div>
+
+          <!-- COOKIE LIST -->
+          <div id="ck-empty" style="color:#a0aec0;font-size:13px;padding:10px 0;display:none">No cookies added yet. Add cookies above.</div>
+          <table class="ck-table" id="ck-table" style="display:none">
+            <thead><tr><th>Cookie Name</th><th>Value (hidden)</th><th></th></tr></thead>
+            <tbody id="ck-tbody"></tbody>
+          </table>
+
+          <div class="brow">
+            <button class="btn bp" onclick="saveAllCookies()"><i class="ti ti-device-floppy"></i> Save All Cookies to Firebase</button>
+            <button class="btn bd bsm" onclick="clearAllCookies()"><i class="ti ti-trash"></i> Clear All</button>
+          </div>
+
+          <div class="al alw" style="margin-top:14px;margin-bottom:0">
+            <i class="ti ti-alert-triangle"></i>
+            <div>When you save cookies, all activated employees get them on next launch. If your ALLDATA session expires, come back here and update with fresh cookies.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SESSION GROUPS -->
+      <div class="pg" id="pg-groups">
+        <div class="pgt">Session Tokens</div>
+        <div class="pgd">Create 2–5 token slots, each with its own ALLDATA cookies. When you activate a new customer, pick which token they use. If one token gets flagged or expires, only the customers on that token are affected.</div>
+
+        <div class="card">
+          <div class="cth">Quick Add</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+            <button class="btn bgh bsm" onclick="quickAddToken(1)">+ Token 1</button>
+            <button class="btn bgh bsm" onclick="quickAddToken(2)">+ Token 2</button>
+            <button class="btn bgh bsm" onclick="quickAddToken(3)">+ Token 3</button>
+            <button class="btn bgh bsm" onclick="quickAddToken(4)">+ Token 4</button>
+            <button class="btn bgh bsm" onclick="quickAddToken(5)">+ Token 5</button>
+          </div>
+          <div class="add-ck">
+            <div class="field">
+              <label>Or Custom Name</label>
+              <input type="text" id="grp-name" placeholder="Session 1"/>
+            </div>
+            <div class="field" style="display:flex;align-items:flex-end">
+              <button class="btn bp" onclick="createGroup()" style="height:38px">
+                <i class="ti ti-plus"></i> Create
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="grp-empty" style="color:#a0aec0;font-size:13px;padding:10px 0;display:none">No tokens yet. Add one above.</div>
+        <div id="grp-list"></div>
+      </div>
+
+      <!-- PROXY -->
+      <div class="pg" id="pg-proxy">
+        <div class="pgt">Proxy Settings</div>
+        <div class="pgd">HTTP residential proxy — stored encrypted in Firebase, applied automatically to all employee apps.</div>
+        <div class="card">
+          <div class="cth">HTTP Proxy</div>
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid #f0f4ff">
+            <label class="tgl"><input type="checkbox" id="px-on" onchange="togglePx()"/><span class="tsl"></span></label>
+            <div><div style="font-weight:600;font-size:13px">Enable Proxy</div><div style="font-size:11px;color:#a0aec0">Route ALLDATA traffic through residential proxy</div></div>
+          </div>
+          <div id="px-fields" class="pxf" style="opacity:.4;pointer-events:none">
+            <div class="r3">
+              <div class="field"><label>Proxy Host / IP</label><input type="text" id="px-host" placeholder="proxy.provider.com" style="font-family:'JetBrains Mono',monospace;font-size:12px"/></div>
+              <div class="field"><label>Port</label><input type="text" id="px-port" placeholder="8080" style="font-family:'JetBrains Mono',monospace;font-size:12px"/></div>
+              <div class="field"><label>Protocol</label><select id="px-proto"><option value="http">HTTP</option><option value="https">HTTPS</option></select></div>
+            </div>
+            <div class="r2">
+              <div class="field"><label>Proxy Username</label><input type="text" id="px-user" placeholder="username" autocomplete="off"/></div>
+              <div class="field"><label>Proxy Password</label><input type="password" id="px-pass" placeholder="••••••••"/></div>
+            </div>
+          </div>
+          <div class="brow">
+            <button class="btn bp" onclick="savePx()"><i class="ti ti-device-floppy"></i> Save Proxy</button>
+            <button class="btn bd bsm" onclick="clearPx()"><i class="ti ti-trash"></i> Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDING -->
+      <div class="pg" id="pg-pending">
+        <div class="pgt">Pending Requests</div>
+        <div class="pgd">Employees waiting for your approval</div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>HWID</th><th>Registered</th><th style="text-align:right;padding-right:14px">Actions</th></tr></thead>
+            <tbody id="pend-tbody"></tbody>
+          </table>
+          <div id="pend-empty" class="empty"><i class="ti ti-checks"></i>No pending requests!</div>
+        </div>
+      </div>
+
+      <!-- EMPLOYEES -->
+      <div class="pg" id="pg-employees">
+        <div class="pgt">All Employees</div>
+        <div class="pgd">Manage all registered employees</div>
+        <div class="tbar">
+          <input class="srch" id="emp-srch" placeholder="🔍  Search by name, email or HWID…" oninput="renderEmps()"/>
+        </div>
+        <div class="card" style="padding:0;overflow:hidden">
+          <table>
+            <thead><tr><th>Name</th><th>Email</th><th>HWID</th><th>Expiry</th><th>Status</th><th>Session</th><th>Active</th><th style="text-align:right;padding-right:14px">Actions</th></tr></thead>
+            <tbody id="emp-tbody"></tbody>
+          </table>
+          <div id="emp-empty" class="empty" style="display:none"><i class="ti ti-users"></i>No employees yet</div>
+        </div>
+      </div>
+
+      <!-- LOG -->
+      <div class="pg" id="pg-log">
+        <div class="pgt">Activity Log</div>
+        <div class="pgd">All admin actions this session</div>
+        <div class="card">
+          <div class="cth">Log <button class="btn bgh bsm" onclick="clearLog()">Clear</button></div>
+          <div class="log-list" id="full-log"><div style="color:#a0aec0;font-size:12px;padding:6px 0">No activity yet</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="mo">
+  <div class="modal">
+    <div class="mttl">Edit Employee</div>
+    <div class="field"><label>Full Name</label><input type="text" id="m-name" readonly style="background:#f6f8ff;color:#6b7fa3"/></div>
+    <div class="field"><label>Email</label><input type="text" id="m-email" readonly style="background:#f6f8ff;color:#6b7fa3"/></div>
+    <div class="field"><label>HWID</label><input type="text" id="m-hwid" readonly style="background:#f6f8ff;color:#6b7fa3;font-family:'JetBrains Mono',monospace;font-size:12px"/></div>
+    <div class="field"><label>Expiry Date</label>
+      <input type="date" id="m-exp"/>
+      <div class="brow" style="margin-top:7px">
+        <button class="btn bgh bsm" onclick="addDays(30)">+30d</button>
+        <button class="btn bgh bsm" onclick="addDays(90)">+90d</button>
+        <button class="btn bgh bsm" onclick="addDays(180)">+6mo</button>
+        <button class="btn bgh bsm" onclick="addDays(365)">+1yr</button>
+        <button class="btn bgh bsm" onclick="document.getElementById('m-exp').value=''">♾ Never</button>
+      </div>
+    </div>
+    <div class="field" style="display:flex;align-items:center;gap:11px">
+      <label style="margin:0">Active</label>
+      <label class="tgl"><input type="checkbox" id="m-act"/><span class="tsl"></span></label>
+    </div>
+    <div class="mft">
+      <button class="btn bgh" onclick="closeMod()">Cancel</button>
+      <button class="btn bp" onclick="saveMod()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script type="module">
+import { initializeApp }                                        from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"
+import { getDatabase, ref, set, update, remove, get, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js"
+
+const FB = initializeApp({
+  apiKey:            "AIzaSyCRS9msQqDVX_dgQF2oQbJ-jv2XzeEvH0Y",
+  authDomain:        "alldata-55e68.firebaseapp.com",
+  databaseURL:       "https://alldata-55e68-default-rtdb.firebaseio.com",
+  projectId:         "alldata-55e68",
+  storageBucket:     "alldata-55e68.firebasestorage.app",
+  messagingSenderId: "525244503094",
+  appId:             "1:525244503094:web:beffa900bd2c2abe8db497"
+})
+const db = getDatabase(FB)
+
+const ADMIN_PW = '976077'   // ← Change this!
+const SECRET   = 'ALLDATA_APP_KEY_9X2K7P4M'
+
+// ── BROWSER CRYPTO (same key as Electron app) ──────────
+async function getKey() {
+  const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SECRET))
+  return crypto.subtle.importKey('raw', hash, { name:'AES-CBC' }, false, ['encrypt','decrypt'])
+}
+async function enc(text) {
+  const key = await getKey()
+  const iv  = crypto.getRandomValues(new Uint8Array(16))
+  const ct  = await crypto.subtle.encrypt({ name:'AES-CBC', iv }, key, new TextEncoder().encode(text))
+  const h   = a => Array.from(a).map(b=>b.toString(16).padStart(2,'0')).join('')
+  return h(iv) + ':' + h(new Uint8Array(ct))
+}
+async function dec(str) {
+  try {
+    const [ivH, ctH] = str.split(':')
+    const iv  = new Uint8Array(ivH.match(/.{2}/g).map(h=>parseInt(h,16)))
+    const ct  = new Uint8Array(ctH.match(/.{2}/g).map(h=>parseInt(h,16)))
+    const key = await getKey()
+    const pt  = await crypto.subtle.decrypt({ name:'AES-CBC', iv }, key, ct)
+    return new TextDecoder().decode(pt)
+  } catch { return null }
+}
+
+let emps = {}, logs = [], editHwid = null
+// Local cookie list (before saving to Firebase)
+let localCookies = []
+// Session groups: { groupId: { name, cookies_enc:{...} } }
+let sessGroups = {}
+// Local (unsaved) cookie lists per group, keyed by groupId
+let grpLocalCookies = {}
+
+// ── LOGIN ──────────────────────────────────────────────
+window.doLogin = function() {
+  if (document.getElementById('pw').value === ADMIN_PW) {
+    sessionStorage.setItem('logicpart_admin_authed', '1')
+    document.getElementById('gate').style.display = 'none'
+    document.getElementById('app').style.display  = 'flex'
+    startListen(); loadConfig(); addLog('🔐 Admin logged in')
+  } else {
+    document.getElementById('pw-err').textContent = 'Incorrect password'
+    document.getElementById('pw').value = ''
+    setTimeout(() => document.getElementById('pw-err').textContent = '', 2500)
+  }
+}
+window.doLock = function() {
+  sessionStorage.removeItem('logicpart_admin_authed')
+  document.getElementById('gate').style.display = 'flex'
+  document.getElementById('app').style.display  = 'none'
+  document.getElementById('pw').value = ''
+}
+
+// Stay logged in across a page refresh (same browser tab/session) —
+// only a real Lock click, or closing the tab, requires the password again
+if (sessionStorage.getItem('logicpart_admin_authed') === '1') {
+  document.getElementById('gate').style.display = 'none'
+  document.getElementById('app').style.display  = 'flex'
+  startListen(); loadConfig()
+}
+
+function startListen() {
+  onValue(ref(db,'employees'), snap => {
+    emps = snap.exists() ? snap.val() : {}
+    renderAll()
+  })
+  onValue(ref(db,'sessions'), snap => {
+    sessGroups = snap.exists() ? snap.val() : {}
+    renderGroups()
+    renderEmps()
+  })
+}
+
+window.showPg = function(n) {
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('on'))
+  document.querySelectorAll('.nav').forEach(v=>v.classList.remove('on'))
+  document.getElementById('pg-'+n).classList.add('on')
+  const nav=document.querySelector(`[data-pg="${n}"]`)
+  if(nav) nav.classList.add('on')
+}
+
+function renderAll() { updateStats(); renderPend(); renderEmps(); renderDash() }
+
+function updateStats() {
+  const today=new Date().toISOString().split('T')[0]
+  const list=Object.values(emps)
+  const act=list.filter(e=>e.active&&!e.blocked&&(!e.expiry||e.expiry>=today)).length
+  const pnd=list.filter(e=>!e.active&&!e.blocked).length
+  const blk=list.filter(e=>e.blocked).length
+  document.getElementById('s-tot').textContent=list.length
+  document.getElementById('s-act').textContent=act
+  document.getElementById('s-pnd').textContent=pnd
+  document.getElementById('s-blk').textContent=blk
+  const pc=document.getElementById('pend-cnt')
+  pc.textContent=pnd; pc.style.display=pnd?'inline':'none'
+  const pa=document.getElementById('pend-alert')
+  pa.style.display=pnd?'flex':'none'
+  document.getElementById('pend-alert-n').textContent=pnd
+}
+
+async function renderDash() {
+  // Cookies status
+  const cs = await get(ref(db,'config/cookies_enc'))
+  if (cs.exists() && cs.val()?.data) {
+    const d = await dec(cs.val().data)
+    const arr = d ? JSON.parse(d) : []
+    document.getElementById('dash-ck').innerHTML =
+      `<div class="srow"><span class="badge bgg"><span class="bdot"></span>${arr.length} cookie(s) saved</span><a style="color:#2563eb;cursor:pointer;font-size:12px" onclick="showPg('cookies')"> → Manage</a></div>`
+  } else {
+    document.getElementById('dash-ck').innerHTML =
+      `<div class="srow"><span class="badge bgr"><span class="bdot"></span>No cookies</span><a style="color:#2563eb;cursor:pointer;font-size:12px" onclick="showPg('cookies')"> → Add cookies</a></div>`
+  }
+  // Proxy status
+  const ps = await get(ref(db,'config/proxy_enc'))
+  if (ps.exists() && ps.val()?.data) {
+    const d = await dec(ps.val().data)
+    const p = d ? JSON.parse(d) : null
+    document.getElementById('dash-proxy').innerHTML = (p?.enabled && p?.host)
+      ? `<div class="srow"><span class="badge bga"><span class="bdot"></span>Active</span><span style="color:#8a9bb5;font-size:12px">${esc(p.host)}:${esc(p.port)}</span></div>`
+      : `<div class="srow"><span class="badge bgntr"><span class="bdot"></span>Disabled</span><a style="color:#2563eb;cursor:pointer;font-size:12px" onclick="showPg('proxy')"> → Configure</a></div>`
+  } else {
+    document.getElementById('dash-proxy').innerHTML =
+      `<div class="srow"><span class="badge bgntr"><span class="bdot"></span>Not Set</span><a style="color:#2563eb;cursor:pointer;font-size:12px" onclick="showPg('proxy')"> → Configure</a></div>`
+  }
+}
+
+// ── COOKIES ────────────────────────────────────────────
+async function loadConfig() {
+  // Load existing cookies from Firebase
+  const cs = await get(ref(db,'config/cookies_enc'))
+  if (cs.exists() && cs.val()?.data) {
+    const d = await dec(cs.val().data)
+    if (d) { localCookies = JSON.parse(d); renderCookieTable() }
+  }
+  // Load proxy
+  const ps = await get(ref(db,'config/proxy_enc'))
+  if (ps.exists() && ps.val()?.data) {
+    const d = await dec(ps.val().data)
+    const p = d ? JSON.parse(d) : null
+    if (p) {
+      document.getElementById('px-on').checked   = !!p.enabled
+      document.getElementById('px-host').value   = p.host||''
+      document.getElementById('px-port').value   = p.port||''
+      document.getElementById('px-proto').value  = p.protocol||'http'
+      document.getElementById('px-user').value   = p.user||''
+      document.getElementById('px-pass').value   = p.pass||''
+      togglePx()
+    }
+  }
+  renderDash()
+}
+
+window.addCookie = function() {
+  const name = document.getElementById('ck-name').value.trim()
+  const val  = document.getElementById('ck-val').value.trim()
+  if (!name) { toast('Enter cookie name','err'); return }
+  if (!val)  { toast('Enter cookie value','err'); return }
+  // Replace if name already exists
+  const idx = localCookies.findIndex(c => c.name === name)
+  if (idx >= 0) localCookies[idx] = { name, value: val }
+  else localCookies.push({ name, value: val })
+  document.getElementById('ck-name').value = ''
+  document.getElementById('ck-val').value  = ''
+  renderCookieTable()
+  toast(`Cookie "${name}" added — click Save to push to Firebase`, 'info')
+}
+
+function renderCookieTable() {
+  const empty = document.getElementById('ck-empty')
+  const table = document.getElementById('ck-table')
+  if (localCookies.length === 0) {
+    empty.style.display = 'block'
+    table.style.display = 'none'
+    return
+  }
+  empty.style.display = 'none'
+  table.style.display = 'table'
+  document.getElementById('ck-tbody').innerHTML = localCookies.map((c,i) => `
+    <tr>
+      <td><span class="ck-name">${esc(c.name)}</span></td>
+      <td><span class="ck-val" title="${esc(c.value)}">${c.value.substring(0,30)}…</span></td>
+      <td style="text-align:right">
+        <button class="btn bgh bsm" onclick="copyCookieValue(${i})" title="Copy full value"><i class="ti ti-copy"></i></button>
+        <button class="btn bd bsm" onclick="removeCookie(${i})"><i class="ti ti-trash"></i></button>
+      </td>
+    </tr>`).join('')
+}
+
+window.removeCookie = function(i) {
+  const name = localCookies[i]?.name
+  localCookies.splice(i, 1)
+  renderCookieTable()
+  toast(`Cookie "${name}" removed — click Save to update`, 'info')
+}
+
+window.copyCookieValue = function(i) {
+  const val = localCookies[i]?.value
+  if (!val) return
+  navigator.clipboard.writeText(val)
+    .then(() => toast('Full value copied to clipboard','ok'))
+    .catch(() => toast('Copy failed — select and copy manually','err'))
+}
+
+window.saveAllCookies = async function() {
+  if (localCookies.length === 0) { toast('Add at least one cookie first','err'); return }
+  const encrypted = await enc(JSON.stringify(localCookies))
+  await set(ref(db,'config/cookies_enc'), { data: encrypted, savedAt: new Date().toISOString() })
+  addLog(`🍪 Saved ${localCookies.length} cookie(s) to Firebase`)
+  toast(`✅ ${localCookies.length} cookie(s) saved — all employees will use them on next launch`, 'ok')
+  renderDash()
+}
+
+window.clearAllCookies = async function() {
+  if (!confirm('Clear all saved cookies? Employees will lose access until you add new ones.')) return
+  localCookies = []
+  renderCookieTable()
+  await remove(ref(db,'config/cookies_enc'))
+  addLog('🗑 All cookies cleared')
+  toast('Cookies cleared','warn')
+  renderDash()
+}
+
+// ── SESSION TOKENS ────────────────────────────────────────
+function slugify(name) {
+  return 'grp_' + name.toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'') + '_' + Date.now().toString(36)
+}
+
+window.createGroup = async function() {
+  const name = document.getElementById('grp-name').value.trim()
+  if (!name) { toast('Enter a group name','err'); return }
+  const id = slugify(name)
+  await set(ref(db,`sessions/${id}`), { name, createdAt: new Date().toISOString() })
+  document.getElementById('grp-name').value = ''
+  addLog(`👥 Created session group: ${name}`)
+  toast(`Group "${name}" created`,'ok')
+}
+
+window.quickAddToken = async function(n) {
+  const name = `Token ${n}`
+  const existing = Object.values(sessGroups).find(g => g.name === name)
+  if (existing) { toast(`"${name}" already exists`,'info'); return }
+  const id = slugify(name)
+  await set(ref(db,`sessions/${id}`), { name, createdAt: new Date().toISOString() })
+  addLog(`👥 Created session token: ${name}`)
+  toast(`"${name}" created`,'ok')
+}
+
+window.deleteGroup = async function(id) {
+  const name = sessGroups[id]?.name || id
+  const count = Object.values(emps).filter(e => e.sessionId === id).length
+  const msg = count > 0
+    ? `Delete "${name}"? ${count} employee(s) are assigned to it and will fall back to the default cookies.`
+    : `Delete "${name}"?`
+  if (!confirm(msg)) return
+  await remove(ref(db,`sessions/${id}`))
+  delete grpLocalCookies[id]
+  addLog(`🗑 Deleted session group: ${name}`)
+  toast('Group deleted','info')
+}
+
+function getGroupCookies(id) {
+  if (!grpLocalCookies[id]) {
+    grpLocalCookies[id] = sessGroups[id]?._decoded || []
+  }
+  return grpLocalCookies[id]
+}
+
+window.addGroupCookie = function(id) {
+  const nameEl = document.getElementById(`grp-ck-name-${id}`)
+  const valEl  = document.getElementById(`grp-ck-val-${id}`)
+  const name = nameEl.value.trim(), val = valEl.value.trim()
+  if (!name || !val) { toast('Enter cookie name and value','err'); return }
+  const list = getGroupCookies(id)
+  const idx = list.findIndex(c => c.name === name)
+  if (idx >= 0) list[idx] = { name, value: val }
+  else list.push({ name, value: val })
+  nameEl.value = ''; valEl.value = ''
+  renderGroups()
+}
+
+window.removeGroupCookie = function(id, i) {
+  getGroupCookies(id).splice(i, 1)
+  renderGroups()
+}
+
+window.copyGroupCookieValue = function(id, i) {
+  const val = getGroupCookies(id)[i]?.value
+  if (!val) return
+  navigator.clipboard.writeText(val)
+    .then(() => toast('Full value copied to clipboard','ok'))
+    .catch(() => toast('Copy failed — select and copy manually','err'))
+}
+
+window.saveGroupCookies = async function(id) {
+  const list = getGroupCookies(id)
+  if (list.length === 0) { toast('Add at least one cookie first','err'); return }
+  const encrypted = await enc(JSON.stringify(list))
+  await set(ref(db,`sessions/${id}/cookies_enc`), { data: encrypted, savedAt: new Date().toISOString() })
+  addLog(`🍪 Saved ${list.length} cookie(s) to group "${sessGroups[id]?.name || id}"`)
+  toast(`✅ Saved to "${sessGroups[id]?.name || id}"`,'ok')
+}
+
+window.clearGroupCookies = async function(id) {
+  if (!confirm('Clear all cookies for this group?')) return
+  grpLocalCookies[id] = []
+  await remove(ref(db,`sessions/${id}/cookies_enc`))
+  addLog(`🗑 Cleared cookies for group "${sessGroups[id]?.name || id}"`)
+  toast('Group cookies cleared','warn')
+  renderGroups()
+}
+
+window.assignSession = async function(hwid, sessionId) {
+  await update(ref(db,`employees/${hwid}`), { sessionId: sessionId || null })
+  const gname = sessionId ? (sessGroups[sessionId]?.name || sessionId) : 'Default (no group)'
+  addLog(`🔗 ${emps[hwid]?.name} assigned to: ${gname}`)
+  toast(`${emps[hwid]?.name} → ${gname}`,'ok')
+}
+
+async function decodeGroupCookiesOnce(id) {
+  try {
+    const raw = await get(ref(db,`sessions/${id}/cookies_enc`))
+    if (raw.exists() && raw.val()?.data) {
+      const decoded = await dec(raw.val().data)
+      if (decoded) { grpLocalCookies[id] = JSON.parse(decoded); renderGroups() }
+    }
+  } catch {}
+}
+
+function renderGroups() {
+  const ids = Object.keys(sessGroups)
+  document.getElementById('grp-empty').style.display = ids.length ? 'none' : 'block'
+  document.getElementById('grp-list').innerHTML = ids.map(id => {
+    const g = sessGroups[id]
+    const count = Object.values(emps).filter(e => e.sessionId === id).length
+    const list = grpLocalCookies[id]
+    const hasLoaded = Array.isArray(list)
+    if (!hasLoaded && g.cookies_enc) decodeGroupCookiesOnce(id)
+    const cookies = hasLoaded ? list : []
+    const rows = cookies.map((c,i) => `
+      <tr>
+        <td><span class="ck-name">${esc(c.name)}</span></td>
+        <td><span class="ck-val" title="${esc(c.value)}">${c.value.substring(0,24)}…</span></td>
+        <td style="text-align:right">
+          <button class="btn bgh bsm" onclick="copyGroupCookieValue('${id}',${i})" title="Copy full value"><i class="ti ti-copy"></i></button>
+          <button class="btn bd bsm" onclick="removeGroupCookie('${id}',${i})"><i class="ti ti-trash"></i></button>
+        </td>
+      </tr>`).join('')
+    return `
+    <div class="card">
+      <div class="cth" style="display:flex;justify-content:space-between;align-items:center">
+        <span>${esc(g.name)} <span style="color:#a0aec0;font-weight:400;font-size:12px">(${count} employee${count===1?'':'s'})</span></span>
+        <button class="btn bd bsm" onclick="deleteGroup('${id}')"><i class="ti ti-trash"></i> Delete Group</button>
+      </div>
+      <div class="add-ck">
+        <div class="field">
+          <label>Cookie Name</label>
+          <input type="text" id="grp-ck-name-${id}" placeholder="Access-Token" style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+        </div>
+        <div class="field">
+          <label>Cookie Value</label>
+          <input type="text" id="grp-ck-val-${id}" placeholder="Paste value here…" style="font-family:'JetBrains Mono',monospace;font-size:12px"/>
+        </div>
+        <div class="field" style="display:flex;align-items:flex-end">
+          <button class="btn bp" onclick="addGroupCookie('${id}')" style="height:38px"><i class="ti ti-plus"></i> Add</button>
+        </div>
+      </div>
+      ${cookies.length ? `<table class="ck-table" style="display:table"><thead><tr><th>Cookie Name</th><th>Value (hidden)</th><th></th></tr></thead><tbody>${rows}</tbody></table>`
+        : `<div style="color:#a0aec0;font-size:13px;padding:8px 0">No cookies added yet for this group.</div>`}
+      <div class="brow">
+        <button class="btn bp" onclick="saveGroupCookies('${id}')"><i class="ti ti-device-floppy"></i> Save Group Cookies</button>
+        <button class="btn bd bsm" onclick="clearGroupCookies('${id}')"><i class="ti ti-trash"></i> Clear</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+// ── PENDING ────────────────────────────────────────────
+function renderPend() {
+  const list=Object.values(emps).filter(e=>!e.active&&!e.blocked)
+  document.getElementById('pend-empty').style.display=list.length?'none':'block'
+  const tokOpts = `<option value="">— Default —</option>` + Object.keys(sessGroups).map(gid =>
+    `<option value="${gid}">${esc(sessGroups[gid].name)}</option>`).join('')
+  document.getElementById('pend-tbody').innerHTML=list.map(e=>`
+    <tr class="rpend">
+      <td><strong>${esc(e.name)}</strong></td>
+      <td style="color:#6b7fa3">${esc(e.email||'')}</td>
+      <td><span class="mono" title="${esc(e.hwid)}">${esc(e.hwid)}</span></td>
+      <td style="color:#a0aec0;font-size:12px">${fmtDate(e.registeredAt)}</td>
+      <td><div style="display:flex;gap:5px;justify-content:flex-end;align-items:center">
+        <select id="pend-tok-${e.hwid}" style="background:#0d1420;color:#e2e8f0;border:1px solid #1e2a3a;border-radius:6px;padding:4px 6px;font-size:12px">${tokOpts}</select>
+        <button class="btn bg_ bsm" onclick="activate('${e.hwid}')"><i class="ti ti-check"></i> Activate</button>
+        <button class="btn bd bsm" onclick="block('${e.hwid}')"><i class="ti ti-ban"></i> Block</button>
+      </div></td>
+    </tr>`).join('')
+}
+
+// ── EMPLOYEES ──────────────────────────────────────────
+window.renderEmps = function() {
+  const q=( document.getElementById('emp-srch')?.value||'').toLowerCase()
+  const today=new Date().toISOString().split('T')[0]
+  const list=Object.values(emps).filter(e=>
+    (e.name||'').toLowerCase().includes(q)||
+    (e.email||'').toLowerCase().includes(q)||
+    (e.hwid||'').toLowerCase().includes(q))
+  document.getElementById('emp-empty').style.display=list.length?'none':'block'
+  document.getElementById('emp-tbody').innerHTML=list.map(e=>{
+    const exp=e.active&&e.expiry&&e.expiry<today
+    const sb=e.blocked?`<span class="badge bgr"><span class="bdot"></span>Blocked</span>`
+      :!e.active?`<span class="badge bga"><span class="bdot"></span>Pending</span>`
+      :exp?`<span class="badge bgr"><span class="bdot"></span>Expired</span>`
+      :`<span class="badge bgg"><span class="bdot"></span>Active</span>`
+    const ex=e.expiry
+      ?`<span style="color:${exp?'#dc2626':'#1e2a3a'}">${e.expiry}</span>`
+      :`<span style="color:#a0aec0;font-size:12px">Never</span>`
+    const grpOpts = `<option value="">— Default —</option>` + Object.keys(sessGroups).map(gid =>
+      `<option value="${gid}" ${e.sessionId===gid?'selected':''}>${esc(sessGroups[gid].name)}</option>`).join('')
+    let lastUsedNote = ''
+    if (e.lastSession) {
+      const usedName = e.lastSession.sessionId ? (sessGroups[e.lastSession.sessionId]?.name || e.lastSession.sessionId) : 'Default'
+      const mismatch = (e.lastSession.sessionId || '') !== (e.sessionId || '')
+      lastUsedNote = `<div style="font-size:11px;margin-top:3px;color:${mismatch?'#dc2626':'#65a86e'}">Last used: ${esc(usedName)}${mismatch?' ⚠️ not yet relaunched':''}</div>`
+      const failed = e.lastSession.wipeFailed || []
+      if (failed.length > 0) {
+        lastUsedNote += `<div style="font-size:11px;margin-top:2px;color:#dc2626">⚠️ Storage locked: ${failed.map(esc).join(', ')}</div>`
+      } else if ((e.lastSession.wipeExisted || []).length > 0) {
+        lastUsedNote += `<div style="font-size:11px;margin-top:2px;color:#65a86e">Storage wipe: OK</div>`
+      }
+    }
+    return`<tr>
+      <td><strong>${esc(e.name)}</strong></td>
+      <td style="color:#6b7fa3">${esc(e.email||'')}</td>
+      <td><span class="mono" title="${esc(e.hwid)}">${esc(e.hwid)}</span></td>
+      <td>${ex}</td><td>${sb}</td>
+      <td>
+        <div style="display:flex;gap:4px;align-items:center">
+          <select id="sess-sel-${e.hwid}" style="background:#0d1420;color:#e2e8f0;border:1px solid #1e2a3a;border-radius:6px;padding:4px 6px;font-size:12px">${grpOpts}</select>
+          <button class="btn bp bsm" onclick="assignSession('${e.hwid}',document.getElementById('sess-sel-${e.hwid}').value)" title="Save session assignment"><i class="ti ti-device-floppy"></i></button>
+        </div>
+        ${lastUsedNote}
+      </td>
+      <td><label class="tgl"><input type="checkbox" ${e.active&&!e.blocked?'checked':''} onchange="toggle('${e.hwid}',this.checked)"/><span class="tsl"></span></label></td>
+      <td><div style="display:flex;gap:4px;justify-content:flex-end">
+        <button class="btn bgh bsm" onclick="openEdit('${e.hwid}')" title="Edit"><i class="ti ti-edit"></i><span class="btxt">Edit</span></button>
+        ${!e.blocked
+          ?`<button class="btn bd bsm" onclick="block('${e.hwid}')" title="Block"><i class="ti ti-ban"></i><span class="btxt">Block</span></button>`
+          :`<button class="btn bg_ bsm" onclick="unblock('${e.hwid}')" title="Unblock"><i class="ti ti-check"></i><span class="btxt">Unblock</span></button>`}
+        <button class="btn bd bsm" onclick="del('${e.hwid}')" title="Delete"><i class="ti ti-trash"></i><span class="btxt">Delete</span></button>
+      </div></td>
+    </tr>`
+  }).join('')
+}
+
+// ── ACTIONS ────────────────────────────────────────────
+window.activate=async function(hwid){
+  const tokSel = document.getElementById(`pend-tok-${hwid}`)
+  const sessionId = tokSel ? tokSel.value : ''
+  await update(ref(db,`employees/${hwid}`),{active:true,blocked:false,activatedAt:new Date().toISOString(),sessionId:sessionId||null})
+  const tokName = sessionId ? (sessGroups[sessionId]?.name || sessionId) : 'Default'
+  addLog(`✅ Activated: ${emps[hwid]?.name} → ${tokName}`)
+  toast(`${emps[hwid]?.name} activated (${tokName})!`,'ok')
+}
+window.block=async function(hwid){if(!confirm(`Block "${emps[hwid]?.name}"?`))return;await update(ref(db,`employees/${hwid}`),{active:false,blocked:true});addLog(`🚫 Blocked: ${emps[hwid]?.name}`);toast(`${emps[hwid]?.name} blocked`,'warn')}
+window.unblock=async function(hwid){await update(ref(db,`employees/${hwid}`),{blocked:false});addLog(`🔓 Unblocked: ${emps[hwid]?.name}`);toast(`Unblocked`,'info')}
+window.del=async function(hwid){const n=emps[hwid]?.name;if(!confirm(`Delete "${n}"?`))return;await remove(ref(db,`employees/${hwid}`));addLog(`🗑 Deleted: ${n}`);toast('Deleted','info')}
+window.toggle=async function(hwid,val){await update(ref(db,`employees/${hwid}`),{active:val,blocked:false});addLog(`${val?'✅ Activated':'🔒 Deactivated'}: ${emps[hwid]?.name}`);toast(val?`${emps[hwid]?.name} activated`:`${emps[hwid]?.name} deactivated`,val?'ok':'info')}
+
+// ── EDIT MODAL ─────────────────────────────────────────
+window.openEdit=function(hwid){const e=emps[hwid];if(!e)return;editHwid=hwid;document.getElementById('m-name').value=e.name||'';document.getElementById('m-email').value=e.email||'';document.getElementById('m-hwid').value=e.hwid||'';document.getElementById('m-exp').value=e.expiry||'';document.getElementById('m-act').checked=!!e.active;document.getElementById('mo').classList.add('open')}
+window.closeMod=function(){document.getElementById('mo').classList.remove('open');editHwid=null}
+window.saveMod=async function(){if(!editHwid)return;await update(ref(db,`employees/${editHwid}`),{expiry:document.getElementById('m-exp').value||'',active:document.getElementById('m-act').checked});addLog(`✏️ Updated: ${emps[editHwid]?.name}`);toast('Updated','ok');closeMod()}
+document.getElementById('mo').addEventListener('click',e=>{if(e.target===document.getElementById('mo'))closeMod()})
+
+// ── PROXY ──────────────────────────────────────────────
+window.togglePx=function(){const on=document.getElementById('px-on').checked;const f=document.getElementById('px-fields');f.style.opacity=on?'1':'0.4';f.style.pointerEvents=on?'all':'none'}
+window.savePx=async function(){
+  const enabled=document.getElementById('px-on').checked
+  const host=document.getElementById('px-host').value.trim()
+  const port=document.getElementById('px-port').value.trim()
+  if(enabled&&!host){toast('Enter proxy host','err');return}
+  if(enabled&&!port){toast('Enter proxy port','err');return}
+  const p={enabled,host,port,protocol:document.getElementById('px-proto').value,user:document.getElementById('px-user').value.trim(),pass:document.getElementById('px-pass').value}
+  const encrypted=await enc(JSON.stringify(p))
+  await set(ref(db,'config/proxy_enc'),{data:encrypted})
+  addLog(`🌐 Proxy ${enabled?'saved: '+host+':'+port:'disabled'}`);toast('Proxy saved','ok');renderDash()
+}
+window.clearPx=async function(){if(!confirm('Clear proxy?'))return;await remove(ref(db,'config/proxy_enc'));document.getElementById('px-on').checked=false;togglePx();toast('Proxy cleared','info');renderDash()}
+
+// ── LOG ────────────────────────────────────────────────
+function addLog(msg){const t=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});logs.unshift({t,msg});const h=logs.length?logs.map(l=>`<div class="log-row"><span class="log-t">${l.t}</span><span class="log-m">${l.msg}</span></div>`).join(''):'<div style="color:#a0aec0;font-size:12px;padding:6px 0">No activity yet</div>';document.getElementById('dash-log').innerHTML=h;document.getElementById('full-log').innerHTML=h}
+window.clearLog=function(){logs=[];addLog('')}
+window.addDays=function(n){const d=new Date();d.setDate(d.getDate()+n);document.getElementById('m-exp').value=d.toISOString().split('T')[0]}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function fmtDate(iso){try{return new Date(iso).toLocaleDateString()}catch{return'—'}}
+let tt
+window.toast=function(msg,type='ok'){const el=document.getElementById('toast');el.textContent=msg;el.className='show '+type;clearTimeout(tt);tt=setTimeout(()=>el.className='',3400)}
+</script>
+</body>
+</html>
